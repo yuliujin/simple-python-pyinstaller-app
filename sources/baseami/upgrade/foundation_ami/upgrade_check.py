@@ -2,10 +2,10 @@ import os
 
 os.system("pip install --upgrade pip")
 os.system("pip install requests json subprocess sys")
-#import requests
-#import json
-#import subprocess
-#import sys
+import requests
+import json
+import subprocess
+import sys
 
 def getLatestUbuntuAMI(suite, releaseObj):
   url = 'http://cloud-images.ubuntu.com/query/' + suite + '/server/released.current.txt'
