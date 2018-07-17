@@ -27,7 +27,7 @@ def getLatestUbuntuAMI(suite, releaseObj):
 
  
 # obtain the latest release json object
-f = open("../../pure_base_ami_upgrade.js", "r")
+f = open("sources/baseami/pure_base_ami_upgrade.js", "r")
 o = json.load(f)
 
 # fetching the latest ubuntu AMIs
@@ -41,5 +41,5 @@ getLatestUbuntuAMI('xenial', o["apps"]["app3"][1])
 getLatestUbuntuAMI('bionic', o["apps"]["app3"][2])
 
 # if changed, write it back
-f = open("../../pure_base_ami_upgrade.js", "w")
+f = open("sources/baseami/pure_base_ami_upgrade.js", "w")
 f.write(json.dumps(o, indent=4, sort_keys=True))
