@@ -1,7 +1,7 @@
 import os
 
-os.system("pip install --upgrade pip")
-os.system("pip install requests json subprocess sys")
+#os.system("pip install --upgrade pip")
+#os.system("pip install requests json subprocess sys")
 import requests
 import json
 import subprocess
