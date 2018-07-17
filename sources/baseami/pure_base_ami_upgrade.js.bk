@@ -1,0 +1,55 @@
+{
+	"pureBaseAmi": {
+		"id": "<amiId>",
+		"foundationAmi": 
+			[
+				{
+					"ubuntuVersion":"14.04",
+					"ubuntuCurrentAmi": "<ubuntuAmiId>",
+					"ubuntuLatestAmi": "<ubuntuAmiId>",
+					"curVersion": "<foundationAmiId>",
+					"newerVersionExist": true,
+					"latestVersion": "",
+					"readyToPublish": true
+				},
+				{
+					"ubuntuVersion":"16.04",
+					"ubuntuCurrentAmi": "<ubuntuAmiId>",
+					"ubuntuLatestAmi": "<ubuntuAmiId>",
+					"curVersion": "<foundationAmiId>",
+					"newerVersionExist": true,
+					"latestVersion": "",
+					"readyToPublish": true
+				},
+				{
+					"ubuntuVersion":"18.04",
+					"ubuntuCurrentAmi": "<ubuntuAmiId>",
+					"ubuntuLatestAmi": "<ubuntuAmiId>",
+					"curVersion": "<foundationAmiId>",
+					"newerVersionExist": true,
+					"latestVersion": "",
+					"readyToPublish": true
+				}
+			],
+			
+		"datadog": {
+			"curVersion": "6.2.1",
+			"newerVersionExist": true,
+			"latestVersion": "",
+			"readyToPublish": false
+		},
+		"ixgbevf": {
+			"curVersion": "4.3.5",
+			"newerVersionExist": false,
+			"latestVersion": "",
+			"readyToPublish": false
+		},
+		"ena": {
+			"curVersion": "1.5.3",
+			"newerVersionExist": false,
+			"latestVersion": "",
+			"readyToPublish": false
+		}
+		
+	}
+}
