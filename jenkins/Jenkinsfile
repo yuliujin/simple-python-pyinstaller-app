@@ -8,7 +8,8 @@ pipeline {
                 }
             }
             steps {
-                sh 'python -m py_compile sources/baseami/upgrade/foundation_ami/upgrade_check.py'
+                sh 'pip install --upgrade pip'
+		sh 'pip install requests json subprocess sys'
                 sh 'python sources/baseami/upgrade/foundation_ami/upgrade_check.py'
             }
         }
