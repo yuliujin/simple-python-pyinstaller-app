@@ -11,7 +11,7 @@ if len(sys.argv) < 2:
   usage(1)
 
 # obtain the latest release json object
-f = open("../../pure_base_ami_upgrade.js", "r")
+f = open("sources/baseami/pure_base_ami_upgrade.js", "r")
 o = json.load(f)
 
 # retrieve the latest ubuntu ami to be used
@@ -53,7 +53,7 @@ print newFoundationAmiId
 ubuntuAmiObj["latestVersion"] = newFoundationAmiId
 ubuntuAmiObj["newerVersionExist"] = "false"
 ubuntuAmiObj["readyToPublish"] = "false"
-f = open("../../pure_base_ami_upgrade.js", "w")
+f = open("sources/baseami/pure_base_ami_upgrade.js", "w")
 f.write(json.dumps(o, indent=4, sort_keys=True))
 f.close()
 
