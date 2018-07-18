@@ -18,18 +18,14 @@ pipeline {
 		}
             }
         }
-		node {
         stage('Upgrade if needed') {
-		steps {
-		script {
-		if (fileExists('app3u14_upgrade_trigger')) {
-                  echo 'Yes'
-		} else {
-    	          echo 'No'
-		}
-		}
-		}
-	}
-        }
+	    when {
+              expression {
+		fileExists('app3u14_upgrade_trigger')
+              }
+	    }
+	    steps {
+              echo "YES"
+	    }
     }
 }
