@@ -87,18 +87,19 @@ pipeline {
 	    steps {
                 sh 'python sources/baseami/upgrade/datadog/upgrade_check.py'
 	    }
+      }
+      stage('Notify SRE team for datadog upgrade if needed') {
             when {
               expression {
                  return fileExists('app1_upgrade_trigger')
               }
             }
             post {
-            always {
-             mail to: 'lyu@purestorage.com',
-             subject: "Datadog has newer version now.",
-             body: "Datadog has newer version now."
-}
-              
+                always {
+                     mail to: 'lyu@purestorage.com',
+                     subject: "Datadog has newer version now.",
+                     body: "Datadog has newer version now."
+                }
             }
       }
     }
