@@ -114,6 +114,7 @@ pipeline {
             }
             steps {
               sh 'cd sources/baseami/upgrade/enhanced_network'
+              sh 'rm -rf amzn-drivers'
               sh 'git clone https://github.com/amzn/amzn-drivers'
               sh 'cd amzn-drivers'
               sh 'git tag | tail -1 | awk -F\'_\' \'{print $3}\' > ../ena_version'
