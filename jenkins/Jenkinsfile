@@ -31,7 +31,7 @@ pipeline {
             }
             when {
               expression {
-                 return fileExists('app3u14_upgrade_trigger')
+                 return fileExists('app3_u14_upgrade_trigger')
               }
             }
 	    steps {
