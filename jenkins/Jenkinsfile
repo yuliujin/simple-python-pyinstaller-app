@@ -78,5 +78,26 @@ pipeline {
 		}
             }
        }
+      stage('Check Datadog-agent version') {
+            agent {
+                docker {
+                    image 'python:2-alpine'
+                }
+            }
+	    steps {
+                sh 'python sources/baseami/upgrade/datadog/upgrade_check.py'
+	    }
+            post {
+            when {
+              expression {
+                 return fileExists('app1_upgrade_trigger')
+              }
+            }
+             mail to: 'lyu@purestorage.com',
+             subject: "Datadog has newer version now.",
+             body: "Datadog has newer version now."
+              
+            }
+      }
     }
 }
