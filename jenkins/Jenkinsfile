@@ -116,7 +116,7 @@ pipeline {
               sh 'cd sources/baseami/upgrade/enhanced_network'
               sh 'git clone https://github.com/amzn/amzn-drivers'
               sh 'cd amzn-drivers'
-              sh "git tag | tail -1 | awk -F'_' '{print $3}' > ../ena_version"
+              sh 'git tag | tail -1 | awk -F\'_\' \'{print $3}\' > ../ena_version'
               sh 'python sources/baseami/upgrade/enhanced_network/upgrade_check.py'
             }
       }
