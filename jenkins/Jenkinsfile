@@ -3,9 +3,9 @@ pipeline {
     stages {
         stage('Check version') {
             agent {
-                docker {
-                    image 'python:2-alpine'
-                }
+              dockerfile {
+                filename 'Dockerfile'
+              }
             }
             steps {
                 sh 'pip install --upgrade pip'
