@@ -102,11 +102,40 @@ pipeline {
               }
             }
             steps {
-            
+              echo "need to notify SRE to upgrade datadog"
+            }
+      }
+      stage('check enhanced nework ena version') {
+            agent {
+              dockerfile {
+                filename 'Dockerfile'
+                dir 'jenkins'
+              }
+            }
+            steps {
+              sh 'cd sources/baseami/upgrade/enhanced_network'
+              sh 'git clone https://github.com/amzn/amzn-drivers'
+              sh 'cd amzn-drivers'
+              sh 'git tag | tail -1 | awk -F'_' '{print $3}' > ../ena_version'
+              sh 'python sources/baseami/upgrade/enhanced_network/upgrade_check.py'
+            }
+      }
+      stage('Notify SRE team for ena upgrade if needed') {
+            agent {
+                docker {
+                    image 'python:2-alpine'
+                }
+            }
+            when {
+              expression {
+                 return fileExists('app2_upgrade_trigger')
+              }
+            }
+            steps {
                      mail to: 'lyu@purestorage.com',
                      subject: "Datadog has newer version now.",
                      body: "Datadog has newer version now."
             }
-      }
     }
+}
 }
