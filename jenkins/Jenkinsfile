@@ -19,10 +19,12 @@ pipeline {
             }
         }
         stage('Upgrade if needed') {
+		steps {
 		if (fileExists('app3u14_upgrade_trigger')) {
                   echo 'Yes'
 		} else {
     	          echo 'No'
+		}
 		}
         }
     }
