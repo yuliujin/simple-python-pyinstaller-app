@@ -27,6 +27,11 @@ pipeline {
 	    steps {
                 sh 'python sources/baseami/upgrade/foundation_ami/upgrade.py u14'
 	    }
+	    post {
+		always {
+			archiveArtifacts 'sources/baseami/pure_base_ami_upgrade.js'
+		}
+            }
        }
     }
 }
