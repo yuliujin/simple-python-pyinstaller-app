@@ -113,7 +113,7 @@ pipeline {
               }
             }
             steps {
-              sh 'cd sources/baseami/upgrade/enhanced_network;rm -rf amzn-drivers;git clone https://github.com/amzn/amzn-drivers;cd amzn-drivers;git tag | tail -1 | awk -F\'_\' \'{print $3}\' > ../ena_version''
+              sh 'cd sources/baseami/upgrade/enhanced_network;rm -rf amzn-drivers;git clone https://github.com/amzn/amzn-drivers;cd amzn-drivers;git tag | tail -1 | awk -F\'_\' \'{print $3}\' > ../ena_version'
               sh 'python sources/baseami/upgrade/enhanced_network/upgrade_check.py'
             }
       }
