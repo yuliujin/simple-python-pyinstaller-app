@@ -12,6 +12,8 @@ pipeline {
                 sh 'pip install --upgrade pip'
 		sh 'pip install requests'
                 sh 'python sources/baseami/upgrade/foundation_ami/upgrade_check.py u14'
+                sh 'git config --global user.email "you@example.com"'
+                sh 'git config --global user.name "Your Name"'
                 sh 'git add sources/baseami/pure_base_ami_upgrade.js'
                 sh 'git commit -m \'updated upgrade js file\''
             }
