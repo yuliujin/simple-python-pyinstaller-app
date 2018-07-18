@@ -30,7 +30,7 @@ print "Latest ubuntu ami is: " + ubuntuLatestAmi
 
 # call create script to create new foundation ami and extract it out from output
 #p=subprocess.Popen(["sh", "../../../create_foundation_ami.sh", ubuntuLatestAmi], stdout=subprocess.PIPE)
-p=subprocess.Popen(["sh", "bb.sh", ubuntuLatestAmi], stdout=subprocess.PIPE)
+p=subprocess.Popen(["sh", "sources/baseami/upgrade/foundation_ami/bb.sh", ubuntuLatestAmi], stdout=subprocess.PIPE)
 newFoundationAmiId = ''
 while True:
   nextline = p.stdout.readline()
