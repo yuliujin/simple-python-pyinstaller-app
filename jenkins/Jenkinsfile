@@ -10,7 +10,7 @@ pipeline {
             steps {
                 sh 'pip install --upgrade pip'
 		sh 'pip install requests'
-		sh 'pip install git'
+		sh 'sudo apt-get install git'
                 sh 'python sources/baseami/upgrade/foundation_ami/upgrade_check.py u14'
                 sh 'git add .'
                 sh 'git commit -m \'update json file\''
