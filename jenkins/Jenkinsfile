@@ -19,13 +19,8 @@ pipeline {
             }
         }
         stage('Upgrade if needed') {
-	    when {
-              expression {
-		fileExists('./app3u14_upgrade_trigger')
-              }
-	    }
 	    steps {
-              echo "YES"
+                sh 'python sources/baseami/upgrade/foundation_ami/upgrade.py u14'
 	    }
        }
     }
