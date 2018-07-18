@@ -19,6 +19,11 @@ pipeline {
             }
         }
         stage('Upgrade if needed') {
+            agent {
+                docker {
+                    image 'python:2-alpine'
+                }
+            }
 	    steps {
                 sh 'python sources/baseami/upgrade/foundation_ami/upgrade.py u14'
 	    }
