@@ -89,17 +89,21 @@ pipeline {
 	    }
       }
       stage('Notify SRE team for datadog upgrade if needed') {
+            agent {
+                docker {
+                    image 'python:2-alpine'
+                }
+            }
             when {
               expression {
                  return fileExists('app1_upgrade_trigger')
               }
             }
-            post {
-                always {
+            steps {
+            
                      mail to: 'lyu@purestorage.com',
                      subject: "Datadog has newer version now.",
                      body: "Datadog has newer version now."
-                }
             }
       }
     }
