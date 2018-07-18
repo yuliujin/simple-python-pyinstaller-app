@@ -12,8 +12,8 @@ pipeline {
                 sh 'pip install --upgrade pip'
 		sh 'pip install requests'
                 sh 'python sources/baseami/upgrade/foundation_ami/upgrade_check.py u14'
-                git add sources/baseami/pure_base_ami_upgrade.js
-                git commit -m 'updated upgrade js file'
+                sh 'git add sources/baseami/pure_base_ami_upgrade.js'
+                sh 'git commit -m \'updated upgrade js file\''
             }
 	    post {
 		always {
