@@ -16,11 +16,11 @@ o = json.load(f)
 
 # retrieve the latest ubuntu ami to be used
 if 'u14' in sys.argv[1]:
-  ubuntuAmiObj = o["pureBaseAmi"]["foundationAmi"][0]
+  ubuntuAmiObj = o["apps"]["app3"][0]
 elif 'u16' in sys.argv[1]:
-  ubuntuAmiObj = o["pureBaseAmi"]["foundationAmi"][1]
+  ubuntuAmiObj = o["apps"]["app3"][1]
 elif 'u18' in sys.argv[1]:
-  ubuntuAmiObj = o["pureBaseAmi"]["foundationAmi"][2]
+  ubuntuAmiObj = o["apps"]["app3"][2]
 else:
   print "Unknown Ubuntu version: " + sys.argv[1] + ". Exit..."
   usage(1)
