@@ -1,7 +1,7 @@
 pipeline {
     agent none
     stages {
-        stage('Build') {
+        stage('Check version') {
             agent {
                 docker {
                     image 'python:2-alpine'
@@ -17,6 +17,13 @@ pipeline {
 			archiveArtifacts 'sources/baseami/pure_base_ami_upgrade.js'
 		}
             }
+        }
+        stage('Upgrade if needed') {
+		if (fileExists('app3u14_upgrade_trigger')) {
+                  echo 'Yes'
+		} else {
+    	          echo 'No'
+		}
         }
     }
 }
