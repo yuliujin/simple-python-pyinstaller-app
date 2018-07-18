@@ -1,7 +1,3 @@
-import os
-
-#os.system("pip install --upgrade pip")
-#os.system("pip install requests json subprocess sys")
 import requests
 import json
 import subprocess
@@ -23,7 +19,7 @@ def getLatestUbuntuAMI(suite, releaseObj):
     releaseObj["ubuntuLatestAmi"] = amiInfoArr[7]
     # since we publish immediately, we update ubuntuCurrentAmi immediately
     releaseObj["readyToPublish"] = "true"
-    subprocess.call(["touch", "app3"+sys.argv[1]+"_upgrade_trigger"]) 
+    subprocess.call(["touch", "app3_"+suite+"_upgrade_trigger"]) 
 
  
 # obtain the latest release json object

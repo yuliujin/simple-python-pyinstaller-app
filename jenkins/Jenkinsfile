@@ -1,7 +1,7 @@
 pipeline {
     agent none
     stages {
-        stage('Check version') {
+        stage('Check ubuntu version') {
             agent {
               dockerfile {
                 filename 'Dockerfile'
@@ -11,19 +11,14 @@ pipeline {
             steps {
                 sh 'pip install --upgrade pip'
 		sh 'pip install requests'
-                sh 'python sources/baseami/upgrade/foundation_ami/upgrade_check.py u14'
+                sh 'python sources/baseami/upgrade/foundation_ami/upgrade_check.py'
                 sh 'git config --global user.email "you@example.com"'
                 sh 'git config --global user.name "Your Name"'
                 sh 'git add sources/baseami/pure_base_ami_upgrade.js'
                 sh 'git commit -m \'updated upgrade js file\''
             }
-	    post {
-		always {
-			archiveArtifacts 'sources/baseami/pure_base_ami_upgrade.js'
-		}
-            }
         }
-        stage('Upgrade if needed') {
+        stage('Upgrade u14 if needed') {
             agent {
                 docker {
                     image 'python:2-alpine'
@@ -31,11 +26,51 @@ pipeline {
             }
             when {
               expression {
-                 return fileExists('app3_u14_upgrade_trigger')
+                 return fileExists('app3_trusty_upgrade_trigger')
               }
             }
 	    steps {
                 sh 'python sources/baseami/upgrade/foundation_ami/upgrade.py u14'
+	    }
+	    post {
+		always {
+			archiveArtifacts 'sources/baseami/pure_base_ami_upgrade.js'
+		}
+            }
+       }
+        stage('Upgrade u16 if needed') {
+            agent {
+                docker {
+                    image 'python:2-alpine'
+                }
+            }
+            when {
+              expression {
+                 return fileExists('app3_xenial_upgrade_trigger')
+              }
+            }
+	    steps {
+                sh 'python sources/baseami/upgrade/foundation_ami/upgrade.py u16'
+	    }
+	    post {
+		always {
+			archiveArtifacts 'sources/baseami/pure_base_ami_upgrade.js'
+		}
+            }
+       }
+        stage('Upgrade u18 if needed') {
+            agent {
+                docker {
+                    image 'python:2-alpine'
+                }
+            }
+            when {
+              expression {
+                 return fileExists('app3_bionic_upgrade_trigger')
+              }
+            }
+	    steps {
+                sh 'python sources/baseami/upgrade/foundation_ami/upgrade.py u18'
 	    }
 	    post {
 		always {
