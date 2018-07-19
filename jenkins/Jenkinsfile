@@ -17,7 +17,7 @@ pipeline {
                 sh 'git add sources/baseami/pure_base_ami_upgrade.js'
                 sh 'git commit -m \'updated upgrade js file\''
 				sh 'git branch -vv; git remote -v'
-				sh 'git push'
+				sh 'git push origin HEAD:master'
             }
         }
         stage('Upgrade u14 if needed') {
