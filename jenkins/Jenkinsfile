@@ -13,10 +13,12 @@ pipeline {
 		sh 'pip install requests'
                 sh 'python sources/baseami/upgrade/foundation_ami/upgrade_check.py'
                 sh 'git config --global user.email "you@example.com"'
-                sh 'git config --global user.name "Your Name"'
+                sh 'git config --global user.name "liujinyu@yahoo.com"'
+                sh 'git config --global user.password "7ebc110a4706a8cd5012aa952e2af652ef628ea1"'
                 sh 'git add sources/baseami/pure_base_ami_upgrade.js'
                 sh 'git commit -m \'updated upgrade js file\''
 	        sh 'git branch -vv; git remote -v'
+                sh 'git push'
             }
         }
         stage('Upgrade u14 if needed') {
