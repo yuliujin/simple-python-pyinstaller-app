@@ -6,7 +6,6 @@ pipeline {
               dockerfile {
                 filename 'Dockerfile'
                 dir 'jenkins'
-                args '-v $HOME:/root'
               }
             }
             steps {
