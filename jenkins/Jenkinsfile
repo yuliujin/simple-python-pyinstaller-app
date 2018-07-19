@@ -16,6 +16,8 @@ pipeline {
                 sh 'git config --global user.name "Your Name"'
                 sh 'git add sources/baseami/pure_base_ami_upgrade.js'
                 sh 'git commit -m \'updated upgrade js file\''
+				sh 'git branch -vv; git remote -v'
+				sh 'git push'
             }
         }
         stage('Upgrade u14 if needed') {
@@ -134,5 +136,6 @@ pipeline {
                      body: "Datadog has newer version now."
             }
     }
+	
 }
 }
