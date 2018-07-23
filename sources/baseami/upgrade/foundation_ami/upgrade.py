@@ -2,6 +2,7 @@ import sys
 import subprocess
 import json
 import re
+import boto3
 
 def usage(exitCode):
   print "Usage: python upgrade.py [u14|u16|u18]"
@@ -11,8 +12,15 @@ if len(sys.argv) < 2:
   usage(1)
 
 # obtain the latest release json object
-f = open("sources/baseami/pure_base_ami_upgrade.js", "r")
-o = json.load(f)
+#f = open("sources/baseami/pure_base_ami_upgrade.js", "r")
+#o = json.load(f)
+
+# obtain the latest json file from s3
+s3 = boto3.resource('s3')
+previous_version = getPreviousVersion(s3, 0)
+s3Obj = s3.Object('baseami-upgrade', 'pure_base_ami_upgrade.js')
+f = s3Obj.get()['Body'].read().decode('utf-8')
+o = json.loads(f)
 
 # retrieve the latest ubuntu ami to be used
 if 'u14' in sys.argv[1]:
@@ -53,8 +61,9 @@ print newFoundationAmiId
 ubuntuAmiObj["latestVersion"] = newFoundationAmiId
 ubuntuAmiObj["newerVersionExist"] = "false"
 ubuntuAmiObj["readyToPublish"] = "false"
-f = open("sources/baseami/pure_base_ami_upgrade.js", "w")
-f.write(json.dumps(o, indent=4, sort_keys=True))
-f.close()
+#f = open("sources/baseami/pure_base_ami_upgrade.js", "w")
+#f.write(json.dumps(o, indent=4, sort_keys=True))
+#f.close()
+uploadFile(s3Obj, json.dumps(o, indent=4, sort_keys=True))
 
 subprocess.call(["touch", "pure_baseami_"+sys.argv[1]+"_upgrade_trigger"])
