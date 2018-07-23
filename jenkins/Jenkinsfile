@@ -1,5 +1,9 @@
 pipeline {
     agent none
+    environment {
+      AWS_ACCESS_KEY_ID     = credentials('lyu-aws-secret-key-id')
+      AWS_SECRET_ACCESS_KEY = credentials('lyu-aws-secret-access-key')
+    }
     stages {
         stage('Check ubuntu version') {
             agent {
@@ -7,10 +11,6 @@ pipeline {
                 filename 'Dockerfile'
                 dir 'jenkins'
               }
-            }
-            environment {
-              AWS_ACCESS_KEY_ID     = credentials('lyu-aws-secret-key-id')
-              AWS_SECRET_ACCESS_KEY = credentials('lyu-aws-secret-access-key')
             }
             steps {
                 sh 'pip install --upgrade pip'
