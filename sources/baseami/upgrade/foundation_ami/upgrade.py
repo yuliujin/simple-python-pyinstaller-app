@@ -17,7 +17,7 @@ if len(sys.argv) < 2:
 
 # obtain the latest json file from s3
 s3 = boto3.resource('s3')
-previous_version = getPreviousVersion(s3, 0)
+#previous_version = getPreviousVersion(s3, 0)
 s3Obj = s3.Object('baseami-upgrade', 'pure_base_ami_upgrade.js')
 f = s3Obj.get()['Body'].read().decode('utf-8')
 o = json.loads(f)
