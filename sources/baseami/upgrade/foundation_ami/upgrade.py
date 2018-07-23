@@ -64,6 +64,6 @@ ubuntuAmiObj["readyToPublish"] = "false"
 #f = open("sources/baseami/pure_base_ami_upgrade.js", "w")
 #f.write(json.dumps(o, indent=4, sort_keys=True))
 #f.close()
-uploadFile(s3Obj, json.dumps(o, indent=4, sort_keys=True))
+s3Obj.put(Body=json.dumps(o, indent=4, sort_keys=True))
 
 subprocess.call(["touch", "pure_baseami_"+sys.argv[1]+"_upgrade_trigger"])
