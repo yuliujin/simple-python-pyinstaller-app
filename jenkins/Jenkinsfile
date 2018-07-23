@@ -31,6 +31,7 @@ pipeline {
               }
             }
 	    steps {
+		sh 'pip install boto3'
                 sh 'python sources/baseami/upgrade/foundation_ami/upgrade.py u14'
 	    }
 	    post {
@@ -51,6 +52,7 @@ pipeline {
               }
             }
 	    steps {
+		sh 'pip install boto3'
                 sh 'python sources/baseami/upgrade/foundation_ami/upgrade.py u16'
 	    }
 	    post {
@@ -71,6 +73,7 @@ pipeline {
               }
             }
 	    steps {
+		sh 'pip install boto3'
                 sh 'python sources/baseami/upgrade/foundation_ami/upgrade.py u18'
 	    }
 	    post {
