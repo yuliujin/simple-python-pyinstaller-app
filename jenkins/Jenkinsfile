@@ -32,6 +32,8 @@ pipeline {
                 }
             }
 	        steps {
+                sh 'pip install --upgrade pip'
+                sh 'pip install requests'
                 sh 'pip install boto3'
                 sh 'python sources/baseami/upgrade/upgrade.py u14'
 	        }
