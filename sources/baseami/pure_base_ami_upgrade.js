@@ -16,8 +16,8 @@
             {
                 "curVersion": "<foundationAmiId>", 
                 "latestVersion": "", 
-                "newerVersionExist": "true", 
-                "readyToPublish": "true", 
+                "newerVersionExist": "false", 
+                "readyToPublish": "false", 
                 "ubuntuCurrentAmi": "", 
                 "ubuntuLatestAmi": "", 
                 "ubuntuVersion": "14.04"

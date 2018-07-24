@@ -9,7 +9,7 @@ def mycmp(version1, version2):
 
 
 def getPreviousVersion(s3, cnt):
-    bucket = s3.Bucket('baseami-upgrade')
+    bucket = s3.Bucket('pure-baseami')
     versions = bucket.object_versions.filter(Prefix='pure_base_ami_upgrade.js')
     previous_version = ''
     for version in versions:
