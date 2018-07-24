@@ -1,18 +1,8 @@
-import commons
 import FoundationAmiUpgrade
-import DatadogUpgrade
-import EnhancedNetworkUpgrade
 
-if commons.mycmp('1.3', '1.4') > 0:
-    print('hello')
+if 'u14' in sys.argv[1] or 'u16' in sys.argv[1] or 'u18' in sys.argv[1]:
+    foundationAmiUpgrade = FoundationAmiUpgrade.FoundationAmiUpgrade()
+    foundationAmiUpgrade.upgrade(sys.argv[1])
 else:
-    print("smaller")
-
-foundationAmiUpgrade = FoundationAmiUpgrade.FoundationAmiUpgrade()
-foundationAmiUpgrade.check_latest_version()
-
-datadogUpgrade = DatadogUpgrade.DatadogUpgrade()
-datadogUpgrade.check_latest_version()
-
-enhancedNetworkUpgrade = EnhancedNetworkUpgrade.EnhancedNetworkUpgrade()
-enhancedNetworkUpgrade.check_latest_version()
+    print('Don't understand the command')
+    sys.exit(1)

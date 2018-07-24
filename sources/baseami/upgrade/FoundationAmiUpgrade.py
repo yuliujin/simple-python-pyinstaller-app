@@ -6,6 +6,7 @@ import boto3
 import os
 import commons
 
+
 class FoundationAmiUpgrade:
 
     def getLatestUbuntuAMI(self, suite, releaseObj):
@@ -103,3 +104,54 @@ class FoundationAmiUpgrade:
             if not written:
                 sys.exit(
                     "Keeping having trouble to upload the json file since there is always at least one newer version generated.")
+
+    def upgrade(self, server):
+        # obtain the latest json file from s3
+        s3 = boto3.resource('s3')
+        s3Obj = s3.Object('baseami-upgrade', 'pure_base_ami_upgrade.js')
+        f = s3Obj.get()['Body'].read().decode('utf-8')
+        o = json.loads(f)
+
+        # retrieve the latest ubuntu ami to be used
+        if 'u14' in server:
+            ubuntuAmiObj = o["apps"]["app3"][0]
+        elif 'u16' in server:
+            ubuntuAmiObj = o["apps"]["app3"][1]
+        elif 'u18' in server:
+            ubuntuAmiObj = o["apps"]["app3"][2]
+        else:
+            print "Unknown Ubuntu version: " + server + ". Exit..."
+            sys.exit(1)
+
+        ubuntuLatestAmi = ubuntuAmiObj["ubuntuLatestAmi"]
+        print "Latest ubuntu ami is: " + ubuntuLatestAmi
+
+        # call create script to create new foundation ami and extract it out from output
+        # p=subprocess.Popen(["sh", "../../../create_foundation_ami.sh", ubuntuLatestAmi], stdout=subprocess.PIPE)
+        p = subprocess.Popen(["sh", "sources/baseami/upgrade/foundation_ami/bb.sh", ubuntuLatestAmi],
+                             stdout=subprocess.PIPE)
+        newFoundationAmiId = ''
+        while True:
+            nextline = p.stdout.readline()
+            if nextline == '' and p.poll() is not None:
+                break
+            sys.stdout.write(nextline)
+            sys.stdout.flush()
+            if "The resulting Foundation AMI ID is " in nextline:
+                m = re.search("(?<=The resulting Foundation AMI ID is ')(\w)*-[\w|\d]*", nextline)
+                newFoundationAmiId = m.group(0)
+
+        output = p.communicate()[0]
+        exitCode = p.returncode
+
+        if (exitCode != 0):
+            raise ProcessException("sh ../../../create_foundation_ami.sh " + ubuntuLatestAmi, exitCode, output)
+
+        print newFoundationAmiId
+
+        ubuntuAmiObj["latestVersion"] = newFoundationAmiId
+        ubuntuAmiObj["newerVersionExist"] = "false"
+        ubuntuAmiObj["readyToPublish"] = "false"
+        s3Obj.put(Body=json.dumps(o, indent=4, sort_keys=True))
+
+        subprocess.call(["touch", "pure_baseami_" + sys.argv[1] + "_upgrade_trigger"])
