@@ -16,7 +16,7 @@ class EnhancedNetworkUpgrade:
 
         # get the latest version
         # if f does not exist, exit
-        f = open('sources/baseami/upgrade/enhanced_network/ena_version', 'r')
+        f = open('ena_version', 'r')
         latestVersion = f.readline()
         print latestVersion
 

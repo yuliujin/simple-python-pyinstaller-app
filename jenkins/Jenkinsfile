@@ -16,7 +16,7 @@ pipeline {
                 sh 'pip install --upgrade pip'
                 sh 'pip install requests'
                 sh 'pip install boto3'
-                sh 'cd sources/baseami/upgrade/enhanced_network;rm -rf amzn-drivers;git clone https://github.com/amzn/amzn-drivers;cd amzn-drivers;git tag | tail -1 | awk -F\'_\' \'{print $3}\' > ../ena_version'
+                sh 'rm -rf amzn-drivers;git clone https://github.com/amzn/amzn-drivers;cd amzn-drivers;git tag | tail -1 | awk -F\'_\' \'{print $3}\' > ../ena_version'
                 sh 'python sources/baseami/upgrade/upgrade_check.py'
             }
         }
