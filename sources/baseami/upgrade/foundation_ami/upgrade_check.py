@@ -3,6 +3,7 @@ import json
 import subprocess
 import sys
 import boto3
+import os
 
 def getLatestUbuntuAMI(suite, releaseObj):
   url = 'http://cloud-images.ubuntu.com/query/' + suite + '/server/released.current.txt'

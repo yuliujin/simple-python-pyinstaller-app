@@ -1,6 +1,7 @@
 import re
 import subprocess
 import json
+import os
 
 def mycmp(version1, version2):
     def normalize(v):
