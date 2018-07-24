@@ -1,9 +1,10 @@
+import os
+import sys
 import requests
 import json
 import subprocess
-import sys
 import boto3
-import os
+import re
 import commons
 
 
@@ -145,7 +146,9 @@ class FoundationAmiUpgrade:
         exitCode = p.returncode
 
         if (exitCode != 0):
-            raise ProcessException("sh ../../../create_foundation_ami.sh " + ubuntuLatestAmi, exitCode, output)
+            #raise ProcessException("sh ../../../create_foundation_ami.sh " + ubuntuLatestAmi, exitCode, output)
+            print 'subprocess exit with ' + str(exitCode)
+            sys.exit(1)
 
         print newFoundationAmiId
 
