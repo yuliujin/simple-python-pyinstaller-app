@@ -15,14 +15,18 @@ def getLatestUbuntuAMI(suite, releaseObj):
   amiInfoArr = amiInfo.split()
   print releaseObj["ubuntuVersion"]
   if releaseObj["ubuntuCurrentAmi"] == "" or releaseObj["ubuntuCurrentAmi"] != amiInfoArr[7]:
+    print amiInfoArr[7]
+    return amiInfoArr[7]
+
+def updateJson(suite, ubuntuVersion, releaseObj):
+    print ubuntuVersion
+    print releaseObj
+    releaseObj["ubuntuCurrentAmi"] = ubuntuVersion
+    releaseObj["ubuntuLatestAmi"] = ubuntuVersion
     releaseObj["newerVersionExist"] = "true"
-    releaseObj["ubuntuCurrentAmi"] = amiInfoArr[7]
-    releaseObj["ubuntuLatestAmi"] = amiInfoArr[7]
     # since we publish immediately, we update ubuntuCurrentAmi immediately
     releaseObj["readyToPublish"] = "true"
-    subprocess.call(["touch", "app3_"+suite+"_upgrade_trigger"]) 
-
- 
+  
 def getPreviousVersion(s3, cnt):
   bucket = s3.Bucket('baseami-upgrade')
   versions = bucket.object_versions.filter(Prefix='pure_base_ami_upgrade.js')
@@ -33,38 +37,70 @@ def getPreviousVersion(s3, cnt):
     if cnt == 1:
       previous_version = object.get('VersionId')
       break
-  print previous_version
   return previous_version
 
-def uploadFile(s3Obj, o):
-  s3Obj.put(Body=o)
   
-# obtain the latest release json object
-#f = open("sources/baseami/pure_base_ami_upgrade.js", "r")
-#o = json.load(f)
-
-# obtain the latest json file from s3
+# obtain the s3 resource 
 s3 = boto3.resource('s3')
+
+# we will retry for up to 3 time if there is a writing conflict. If conflict is still
+# not resolved, exit with error.
 previous_version = getPreviousVersion(s3, 0)
 s3Obj = s3.Object('baseami-upgrade', 'pure_base_ami_upgrade.js')
 f = s3Obj.get()['Body'].read().decode('utf-8')
 o = json.loads(f)
 
 # fetching the latest ubuntu AMIs
+changed = False
 # u14
-getLatestUbuntuAMI('trusty', o["apps"]["app3"][0])
-
+u14Version = getLatestUbuntuAMI('trusty', o["apps"]["app3"][0])
+if u14Version:
+  print 'u14 changed'
+  updateJson('trusty', u14Version, o["apps"]["app3"][0])
+  changed = True
+  
 # u16
-getLatestUbuntuAMI('xenial', o["apps"]["app3"][1])
+u16Version = getLatestUbuntuAMI('xenial', o["apps"]["app3"][1])
+if u16Version:
+  print 'u16 changed'
+  updateJson('xenial', u16Version, o["apps"]["app3"][1])
+  changed = True
 
 # u18
-getLatestUbuntuAMI('bionic', o["apps"]["app3"][2])
+u18Version = getLatestUbuntuAMI('bionic', o["apps"]["app3"][2])
+if u18Version:
+  print 'u18 changed'
+  updateJson('bionic', u18Version, o["apps"]["app3"][2])
+  changed = True
 
-# if changed, write it back
-#f = open("sources/baseami/pure_base_ami_upgrade.js", "w")
-#f.write(json.dumps(o, indent=4, sort_keys=True))
+# if there is no other write till now, upload the file
+if changed: 
+  written = False 
+  for i in range(3):
+    if getPreviousVersion(s3, 0) == previous_version:
+      print "version are the same, writing"
+      s3Obj.put(Body=json.dumps(o, indent=4, sort_keys=True))
+      if u14Version:
+        subprocess.call(["touch", "app3_trusty_upgrade_trigger"]) 
+      if u16Version:
+        subprocess.call(["touch", "app3_xenial_upgrade_trigger"]) 
+      if u18Version:
+        subprocess.call(["touch", "app3_bionic_upgrade_trigger"]) 
+      written = True
+      break
+    else: 
+      print "version are NOT the same, writing"
+      previous_version = getPreviousVersion(s3, 0)
+      s3Obj = s3.Object('baseami-upgrade', 'pure_base_ami_upgrade.js')
+      f = s3Obj.get()['Body'].read().decode('utf-8')
+      o = json.loads(f)
+      if u14Version:
+        updateJson('trusty', u14Version, o)
+      if u16Version:
+        updateJson('xerial', u16Version, o)
+      if u18Version:
+        updateJson('bionic', u18Version, o)
 
-if getPreviousVersion(s3, 0) == previous_version:
-  uploadFile(s3Obj, json.dumps(o, indent=4, sort_keys=True))
-else:
-  print "CONFLICT, REDO"
+  if not written:
+    sys.exit("Keeping having trouble to upload the json file since there is always at least one newer version generated.")
+

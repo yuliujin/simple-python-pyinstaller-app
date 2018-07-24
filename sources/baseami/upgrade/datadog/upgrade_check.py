@@ -2,11 +2,26 @@ import requests
 import re
 import subprocess
 import json
+import boto3
 
 def mycmp(version1, version2):
     def normalize(v):
         return [int(x) for x in re.sub(r'(\.0+)*$','', v).split(".")]
     return cmp(normalize(version1), normalize(version2))
+
+
+def getPreviousVersion(s3, cnt):
+  bucket = s3.Bucket('baseami-upgrade')
+  versions = bucket.object_versions.filter(Prefix='pure_base_ami_upgrade.js')
+  previous_version = ''
+  for version in versions:
+    object = version.get()
+    cnt += 1
+    if cnt == 1:
+      previous_version = object.get('VersionId')
+      break
+  return previous_version
+
 
 url = 'https://github.com/DataDog/datadog-agent/releases/latest'
 r = requests.get(url)
@@ -15,13 +30,37 @@ m = re.search("(?<=https://github.com/DataDog/datadog-agent/releases/tag/)(\d).(
 latestVersion = m.group(0)
 print latestVersion
 
-# obtain the latest release json object
-f = open("sources/baseami/pure_base_ami_upgrade.js", "r")
-o = json.load(f)
+# obtain the s3 resource
+s3 = boto3.resource('s3')
+
+# we will retry for up to 3 time if there is a writing conflict. If conflict is still
+# not resolved, exit with error.
+previous_version = getPreviousVersion(s3, 0)
+s3Obj = s3.Object('baseami-upgrade', 'pure_base_ami_upgrade.js')
+f = s3Obj.get()['Body'].read().decode('utf-8')
+o = json.loads(f)
 
 # fetching the  ubuntu AMIs
 curVersion = o["apps"]["app1"]['curVersion']
 print curVersion
 
 if mycmp(curVersion, latestVersion) < 0:
-  subprocess.call(["touch", "app1_upgrade_trigger"])
+  o["apps"]["app1"]['latestVersion'] = latestVersion
+  o["apps"]["app1"]['newerVersionExist'] = 'true' 
+  written = False
+  for i in range(3):
+    if getPreviousVersion(s3, 0) == previous_version:
+      print "version are the same, writing"
+      s3Obj.put(Body=json.dumps(o, indent=4, sort_keys=True))
+      subprocess.call(["touch", "app1_upgrade_trigger"])
+      written = True
+      break
+    else:
+      print "version are NOT the same, writing"
+      previous_version = getPreviousVersion(s3, 0)
+      s3Obj = s3.Object('baseami-upgrade', 'pure_base_ami_upgrade.js')
+      f = s3Obj.get()['Body'].read().decode('utf-8')
+      o = json.loads(f)
+  if not written:
+    sys.exit("Keeping having trouble to upload the json file since there is always at least one newer version generated.")
+
