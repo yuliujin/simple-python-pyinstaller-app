@@ -45,12 +45,12 @@ curVersion = o["apps"]["app1"]['curVersion']
 print curVersion
 
 if mycmp(curVersion, latestVersion) < 0:
-  o["apps"]["app1"]['latestVersion'] = latestVersion
-  o["apps"]["app1"]['newerVersionExist'] = 'true' 
   written = False
   for i in range(3):
     if getPreviousVersion(s3, 0) == previous_version:
       print "version are the same, writing"
+      o["apps"]["app1"]['latestVersion'] = latestVersion
+      o["apps"]["app1"]['newerVersionExist'] = 'true' 
       s3Obj.put(Body=json.dumps(o, indent=4, sort_keys=True))
       subprocess.call(["touch", "app1_upgrade_trigger"])
       written = True
