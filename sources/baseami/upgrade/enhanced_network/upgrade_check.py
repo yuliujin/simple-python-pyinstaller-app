@@ -20,6 +20,12 @@ def getPreviousVersion(s3, cnt):
   return previous_version
 
 
+
+try:
+    os.remove('app2_upgrade_trigger')
+except OSError:
+    pass
+
 # get the latest version
 # if f does not exist, exit
 f = open('sources/baseami/upgrade/enhanced_network/ena_version', 'r')

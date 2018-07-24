@@ -40,6 +40,13 @@ def getPreviousVersion(s3, cnt):
   return previous_version
 
   
+try:
+    os.remove('app3_trusty_upgrade_trigger')
+    os.remove('app3_xenial_upgrade_trigger')
+    os.remove('app3_bionic_upgrade_trigger')
+except OSError:
+    pass
+
 # obtain the s3 resource 
 s3 = boto3.resource('s3')
 

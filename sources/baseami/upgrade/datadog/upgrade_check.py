@@ -23,6 +23,11 @@ def getPreviousVersion(s3, cnt):
   return previous_version
 
 
+try:
+    os.remove('app1_upgrade_trigger')
+except OSError:
+    pass
+
 url = 'https://github.com/DataDog/datadog-agent/releases/latest'
 r = requests.get(url)
 print r.url 

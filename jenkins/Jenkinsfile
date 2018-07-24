@@ -13,7 +13,6 @@ pipeline {
               }
             }
             steps {
-                sh 'rm app3_trusty_upgrade_trigger'
                 sh 'pip install --upgrade pip'
 		sh 'pip install requests'
 		sh 'pip install boto3'
