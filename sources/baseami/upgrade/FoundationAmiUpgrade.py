@@ -153,8 +153,6 @@ class FoundationAmiUpgrade:
         print newFoundationAmiId
 
         ubuntuAmiObj["latestVersion"] = newFoundationAmiId
-        ubuntuAmiObj["newerVersionExist"] = "false"
-        ubuntuAmiObj["readyToPublish"] = "false"
         s3Obj.put(Body=json.dumps(o, indent=4, sort_keys=True))
 
         subprocess.call(["touch", "pure_baseami_" + server + "_upgrade_trigger"])

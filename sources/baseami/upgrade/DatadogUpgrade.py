@@ -56,3 +56,14 @@ class DatadogUpgrade:
             if not written:
                 sys.exit(
                     "Keeping having trouble to upload the json file since there is always at least one newer version generated.")
+
+    def upgrade(self):
+        # obtain the s3 resource
+        s3 = boto3.resource('s3')
+
+        s3Obj = s3.Object('pure-baseami', 'pure_base_ami_upgrade.js')
+        f = s3Obj.get()['Body'].read().decode('utf-8')
+        o = json.loads(f)
+
+        o["apps"]["app1"]['readyToPublish'] = 'true' 
+        s3Obj.put(Body=json.dumps(o, indent=4, sort_keys=True))
