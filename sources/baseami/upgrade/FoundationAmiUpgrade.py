@@ -81,12 +81,13 @@ class FoundationAmiUpgrade:
                 if commons.getPreviousVersion(s3, 0) == previous_version:
                     print "version are the same, writing"
                     s3Obj.put(Body=json.dumps(o, indent=4, sort_keys=True))
-                    if u14Version:
-                        subprocess.call(["touch", "app3_trusty_upgrade_trigger"])
-                    if u16Version:
-                        subprocess.call(["touch", "app3_xenial_upgrade_trigger"])
-                    if u18Version:
-                        subprocess.call(["touch", "app3_bionic_upgrade_trigger"])
+                    with open('pure_baseami_upgrade_trigger', 'a') as f:
+                      if u14Version:
+                          f.write("U14_READY_UPGRADE=true\n")
+                      if u16Version:
+                          f.write("U16_READY_UPGRADE=true\n")
+                      if u18Version:
+                          f.write("U18_READY_UPGRADE=true\n")
                     written = True
                     break
                 else:
@@ -154,5 +155,3 @@ class FoundationAmiUpgrade:
 
         ubuntuAmiObj["latestVersion"] = newFoundationAmiId
         s3Obj.put(Body=json.dumps(o, indent=4, sort_keys=True))
-
-        subprocess.call(["touch", "pure_baseami_" + server + "_upgrade_trigger"])

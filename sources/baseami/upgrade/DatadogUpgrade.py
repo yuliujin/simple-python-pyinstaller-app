@@ -33,7 +33,10 @@ class DatadogUpgrade:
         o = json.loads(f)
 
         # fetching the  ubuntu AMIs
-        curVersion = o["apps"]["app1"]['curVersion']
+        if o["apps"]["app1"]['readyToPublish'] == 'true':  
+            curVersion = o["apps"]["app1"]['latestVersion']
+        else:
+            curVersion = o["apps"]["app1"]['curVersion']
         print curVersion
 
         if commons.mycmp(curVersion, latestVersion) < 0:
@@ -43,8 +46,10 @@ class DatadogUpgrade:
                     print "version are the same, writing"
                     o["apps"]["app1"]['latestVersion'] = latestVersion
                     o["apps"]["app1"]['newerVersionExist'] = 'true'
+                    o["apps"]["app1"]['readyToPublish'] = 'false'
                     s3Obj.put(Body=json.dumps(o, indent=4, sort_keys=True))
-                    subprocess.call(["touch", "app1_upgrade_trigger"])
+                    with open('pure_baseami_upgrade_trigger', 'a') as f:
+                        f.write("DATADOG_NEED_UPGRADE=true\n")
                     written = True
                     break
                 else:
@@ -56,7 +61,10 @@ class DatadogUpgrade:
             if not written:
                 sys.exit(
                     "Keeping having trouble to upload the json file since there is always at least one newer version generated.")
-
+        elif commons.mycmp(curVersion, latestVersion) == 0 and o["apps"]["app1"]['readyToPublish'] == 'true':
+            with open('pure_baseami_upgrade_trigger', 'a') as f: 
+                f.write("DATADOG_READY_UPGRADE=true\n")
+            
     def upgrade(self):
         # obtain the s3 resource
         s3 = boto3.resource('s3')
