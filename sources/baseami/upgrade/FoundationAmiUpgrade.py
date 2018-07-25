@@ -47,7 +47,7 @@ class FoundationAmiUpgrade:
         # we will retry for up to 3 time if there is a writing conflict. If conflict is still
         # not resolved, exit with error.
         previous_version = commons.getPreviousVersion(s3, 0)
-        s3Obj = s3.Object('baseami-upgrade', 'pure_base_ami_upgrade.js')
+        s3Obj = s3.Object('pure-baseami', 'pure_base_ami_upgrade.js')
         f = s3Obj.get()['Body'].read().decode('utf-8')
         o = json.loads(f)
 
@@ -92,7 +92,7 @@ class FoundationAmiUpgrade:
                 else:
                     print "version are NOT the same, writing"
                     previous_version = commons.getPreviousVersion(s3, 0)
-                    s3Obj = s3.Object('baseami-upgrade', 'pure_base_ami_upgrade.js')
+                    s3Obj = s3.Object('pure-baseami', 'pure_base_ami_upgrade.js')
                     f = s3Obj.get()['Body'].read().decode('utf-8')
                     o = json.loads(f)
                     if u14Version:
@@ -109,7 +109,7 @@ class FoundationAmiUpgrade:
     def upgrade(self, server):
         # obtain the latest json file from s3
         s3 = boto3.resource('s3')
-        s3Obj = s3.Object('baseami-upgrade', 'pure_base_ami_upgrade.js')
+        s3Obj = s3.Object('pure-baseami', 'pure_base_ami_upgrade.js')
         f = s3Obj.get()['Body'].read().decode('utf-8')
         o = json.loads(f)
 
