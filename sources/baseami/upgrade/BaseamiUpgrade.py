@@ -35,13 +35,13 @@ class BaseamiUpgrade:
           o["apps"]["app3"][0]['readyToPublish'] = 'false' 
         toUpgrade = toUpgrade or (o["apps"]["app3"][1]['readyToPublish'] == 'true')
         if toUpgrade:
-          o["apps"]["app3"][1]['curVersion'] = o["apps"]["app3"][0]['latestVersion']
+          o["apps"]["app3"][1]['curVersion'] = o["apps"]["app3"][1]['latestVersion']
           o["apps"]["app3"][1]['latestVersion'] = ''
           o["apps"]["app3"][1]['newerVersionExist'] = 'false' 
           o["apps"]["app3"][1]['readyToPublish'] = 'false' 
         toUpgrade = toUpgrade or (o["apps"]["app3"][2]['readyToPublish'] == 'true')
         if toUpgrade:
-          o["apps"]["app3"][2]['curVersion'] = o["apps"]["app3"][0]['latestVersion']
+          o["apps"]["app3"][2]['curVersion'] = o["apps"]["app3"][2]['latestVersion']
           o["apps"]["app3"][2]['latestVersion'] = ''
           o["apps"]["app3"][2]['newerVersionExist'] = 'false' 
           o["apps"]["app3"][2]['readyToPublish'] = 'false' 
