@@ -11,8 +11,8 @@ elif 'dd' in sys.argv[1]:
     datadogUpgrade.upgrade()
 elif 'baseami' in sys.argv[1]:
     baseamiUpgrade = BaseamiUpgrade.BaseamiUpgrade()
-    if baseamiUpgrade.check_if_upgrade_needed()   :
-        print "calling BASEAMI pipeline to create a new ami"
+    if baseamiUpgrade.upgrade()   :
+        print "called BASEAMI pipeline to create a new ami and updated json file"
 else:
     print("Don't understand the command")
     sys.exit(1)
