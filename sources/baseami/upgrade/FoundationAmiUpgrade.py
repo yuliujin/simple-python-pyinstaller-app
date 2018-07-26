@@ -159,7 +159,7 @@ class FoundationAmiUpgrade:
         with open('pure_baseami_upgrade_trigger', 'a') as f:
             if 'u14' in server:
                 f.write("U14_READY_PUBLISH=true\n")
-            if 'u14' in server:
+            if 'u16' in server:
                 f.write("U16_READY_PUBLISH=true\n")
-            if 'u14' in server:
+            if 'u18' in server:
                 f.write("U18_READY_PUBLISH=true\n")
