@@ -155,3 +155,11 @@ class FoundationAmiUpgrade:
 
         ubuntuAmiObj["latestVersion"] = newFoundationAmiId
         s3Obj.put(Body=json.dumps(o, indent=4, sort_keys=True))
+
+        with open('pure_baseami_upgrade_trigger', 'a') as f:
+            if 'u14' in server:
+                f.write("U14_READY_PUBLISH=true\n")
+            if 'u14' in server:
+                f.write("U16_READY_PUBLISH=true\n")
+            if 'u14' in server:
+                f.write("U18_READY_PUBLISH=true\n")

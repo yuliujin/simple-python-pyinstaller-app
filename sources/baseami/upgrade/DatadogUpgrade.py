@@ -75,3 +75,5 @@ class DatadogUpgrade:
 
         o["apps"]["app1"]['readyToPublish'] = 'true' 
         s3Obj.put(Body=json.dumps(o, indent=4, sort_keys=True))
+        with open('pure_baseami_upgrade_trigger', 'a') as f: 
+            f.write("DATADOG_READY_PUBLISH=true\n")
