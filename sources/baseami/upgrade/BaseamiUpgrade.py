@@ -15,36 +15,37 @@ class BaseamiUpgrade:
         f = s3Obj.get()['Body'].read().decode('utf-8')
         o = json.loads(f)
 
-        toUpgrade = o["apps"]["app1"]['readyToPublish'] == 'true' 
-        if toUpgrade:
+        toUpgrade = False
+        if o["apps"]["app1"]['readyToPublish'] == 'true':
           o["apps"]["app1"]['curVersion'] = o["apps"]["app1"]['latestVersion']
           o["apps"]["app1"]['latestVersion'] = ''
           o["apps"]["app1"]['newerVersionExist'] = 'false' 
           o["apps"]["app1"]['readyToPublish'] = 'false' 
-        toUpgrade = toUpgrade or (o["apps"]["app2"]['readyToPublish'] == 'true')
-        if toUpgrade:
+          toUpgrade = o["apps"]["app1"]['readyToPublish'] == 'true' 
+        if o["apps"]["app2"]['readyToPublish'] == 'true':
           o["apps"]["app2"]['curVersion'] = o["apps"]["app2"]['latestVersion']
           o["apps"]["app2"]['latestVersion'] = ''
           o["apps"]["app2"]['newerVersionExist'] = 'false' 
           o["apps"]["app2"]['readyToPublish'] = 'false' 
-        toUpgrade = toUpgrade or (o["apps"]["app3"][0]['readyToPublish'] == 'true')
-        if toUpgrade:
+          toUpgrade = toUpgrade or (o["apps"]["app2"]['readyToPublish'] == 'true')
+        if o["apps"]["app3"][0]['readyToPublish'] == 'true':
           o["apps"]["app3"][0]['curVersion'] = o["apps"]["app3"][0]['latestVersion']
           o["apps"]["app3"][0]['latestVersion'] = ''
           o["apps"]["app3"][0]['newerVersionExist'] = 'false' 
           o["apps"]["app3"][0]['readyToPublish'] = 'false' 
-        toUpgrade = toUpgrade or (o["apps"]["app3"][1]['readyToPublish'] == 'true')
-        if toUpgrade:
+          toUpgrade = toUpgrade or (o["apps"]["app3"][0]['readyToPublish'] == 'true')
+        if o["apps"]["app3"][1]['readyToPublish'] == 'true':
           o["apps"]["app3"][1]['curVersion'] = o["apps"]["app3"][1]['latestVersion']
           o["apps"]["app3"][1]['latestVersion'] = ''
           o["apps"]["app3"][1]['newerVersionExist'] = 'false' 
           o["apps"]["app3"][1]['readyToPublish'] = 'false' 
-        toUpgrade = toUpgrade or (o["apps"]["app3"][2]['readyToPublish'] == 'true')
-        if toUpgrade:
+          toUpgrade = toUpgrade or (o["apps"]["app3"][1]['readyToPublish'] == 'true')
+        if o["apps"]["app3"][2]['readyToPublish'] == 'true':
           o["apps"]["app3"][2]['curVersion'] = o["apps"]["app3"][2]['latestVersion']
           o["apps"]["app3"][2]['latestVersion'] = ''
           o["apps"]["app3"][2]['newerVersionExist'] = 'false' 
           o["apps"]["app3"][2]['readyToPublish'] = 'false' 
+          toUpgrade = toUpgrade or (o["apps"]["app3"][2]['readyToPublish'] == 'true')
 
         s3Obj.put(Body=json.dumps(o, indent=4, sort_keys=True))
         print "toUpgrade: " + str(toUpgrade)
