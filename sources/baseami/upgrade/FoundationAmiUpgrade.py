@@ -1,11 +1,9 @@
 import os
 import sys
 import requests
-import json
 import subprocess
-import boto3
 import re
-import commons
+import UpgradeObj
 
 
 class FoundationAmiUpgrade:
@@ -33,7 +31,7 @@ class FoundationAmiUpgrade:
         # since we publish immediately, we update ubuntuCurrentAmi immediately
         releaseObj["readyToPublish"] = "true"
 
-    def check_latest_version(self):
+    def check_latest_version(self, o):
         try:
             os.remove('app3_trusty_upgrade_trigger')
             os.remove('app3_xenial_upgrade_trigger')
@@ -41,15 +39,8 @@ class FoundationAmiUpgrade:
         except OSError:
             pass
 
-        # obtain the s3 resource
-        s3 = boto3.resource('s3')
-
-        # we will retry for up to 3 time if there is a writing conflict. If conflict is still
-        # not resolved, exit with error.
-        previous_version = commons.getPreviousVersion(s3, 0)
-        s3Obj = s3.Object('pure-baseami', 'pure_base_ami_upgrade.js')
-        f = s3Obj.get()['Body'].read().decode('utf-8')
-        o = json.loads(f)
+        if not o:
+            o = UpgradeObj.UpgradeObj().getUpgradeObj()
 
         # fetching the latest ubuntu AMIs
         changed = False
@@ -74,45 +65,18 @@ class FoundationAmiUpgrade:
             self.updateJson('bionic', u18Version, o["apps"]["app3"][2])
             changed = True
 
-        # if there is no other write till now, upload the file
         if changed:
-            written = False
-            for i in range(3):
-                if commons.getPreviousVersion(s3, 0) == previous_version:
-                    print "version are the same, writing"
-                    s3Obj.put(Body=json.dumps(o, indent=4, sort_keys=True))
-                    with open('pure_baseami_upgrade_trigger', 'a') as f:
-                      if u14Version:
-                          f.write("U14_READY_UPGRADE=true\n")
-                      if u16Version:
-                          f.write("U16_READY_UPGRADE=true\n")
-                      if u18Version:
-                          f.write("U18_READY_UPGRADE=true\n")
-                    written = True
-                    break
-                else:
-                    print "version are NOT the same, writing"
-                    previous_version = commons.getPreviousVersion(s3, 0)
-                    s3Obj = s3.Object('pure-baseami', 'pure_base_ami_upgrade.js')
-                    f = s3Obj.get()['Body'].read().decode('utf-8')
-                    o = json.loads(f)
-                    if u14Version:
-                        self.updateJson('trusty', u14Version, o)
-                    if u16Version:
-                        self.updateJson('xerial', u16Version, o)
-                    if u18Version:
-                        self.updateJson('bionic', u18Version, o)
-
-            if not written:
-                sys.exit(
-                    "Keeping having trouble to upload the json file since there is always at least one newer version generated.")
+            with open('pure_baseami_upgrade_trigger', 'a') as f:
+                if u14Version:
+                    f.write("U14_READY_UPGRADE=true\n")
+                if u16Version:
+                    f.write("U16_READY_UPGRADE=true\n")
+                if u18Version:
+                    f.write("U18_READY_UPGRADE=true\n")
+            return changed
 
     def upgrade(self, server):
-        # obtain the latest json file from s3
-        s3 = boto3.resource('s3')
-        s3Obj = s3.Object('pure-baseami', 'pure_base_ami_upgrade.js')
-        f = s3Obj.get()['Body'].read().decode('utf-8')
-        o = json.loads(f)
+        o = UpgradeObj.UpgradeObj().getUpgradeObj()
 
         # retrieve the latest ubuntu ami to be used
         if 'u14' in server:
@@ -154,7 +118,7 @@ class FoundationAmiUpgrade:
         print newFoundationAmiId
 
         ubuntuAmiObj["latestVersion"] = newFoundationAmiId
-        s3Obj.put(Body=json.dumps(o, indent=4, sort_keys=True))
+        UpgradeObj.UpgradeObj().putUpgradeObj(o)
 
         with open('pure_baseami_upgrade_trigger', 'a') as f:
             if 'u14' in server:
