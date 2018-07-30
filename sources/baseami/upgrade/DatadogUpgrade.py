@@ -40,7 +40,7 @@ class DatadogUpgrade:
             return True
         elif commons.mycmp(curVersion, latestVersion) == 0 and o["apps"]["app1"]['readyToPublish'] == 'true':
             with open('pure_baseami_upgrade_trigger', 'a') as f: 
-                f.write("DATADOG_READY_UPGRADE=true\n")
+                f.write("DATADOG_READY_PUBLISH=true\n")
             
     def upgrade(self):
         o = UpgradeObj.UpgradeObj().getUpgradeObj()
